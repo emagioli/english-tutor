@@ -65,11 +65,10 @@ def ask_gemini(message):
     
     return response.text
 
-def extract_word(message):
-    prompt = '''Your output is going to be JUST THE WORD that's being asked, 
-#                     no punctuation nor phonetic alphabets: {message.text}'''
-    response = model.generate_content(prompt)
-    return response.text
+# def extract_word(message):
+#     prompt = '''Your output is going to be JUST THE WORD that's being asked, no punctuation nor phonetic alphabets: {message.text}'''
+#     response = model.generate_content(prompt)
+#     return response.text
 
 # --------------- Bot Telegram ---------------
 
@@ -89,9 +88,10 @@ def process_message(message):
     if('spike' in txt):
         rep = ask_gemini(message)
     elif('pronunciation' in txt):
-        word = extract_word(message)
-        rep = f'''You can check the pronunciation of the word {word} here:
-        https://www.google.com/search?q={word}+pronunciation'''
+        word = message.text.split(' ')[1].lower()
+        rep = f'''You can check the pronunciation of the word **{word.capitalize()}** below:
+https://www.google.com/search?q=pronunciation+{word}
+https://dictionary.cambridge.org/pronunciation/english/{word}'''
     elif('hey' in txt):
         rep = standard_rep
     elif('thank' in txt):
