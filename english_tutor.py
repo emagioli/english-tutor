@@ -12,7 +12,7 @@ chat_history = {}
 
 genai.configure(api_key=GEMINI_KEY)
 
-init_prompt = "You are Spike, an English Teacher helping your brazilian ESL students. ALWAYS ANSWER USING PLANE TEXT, NEVER USE MARKDOWN OR ANY FORMATTING TOOLS."
+init_prompt = "You are Spike, an English Tutor helping your brazilian ESL student. ALWAYS ANSWER USING PLANE TEXT, NEVER USE MARKDOWN OR ANY FORMATTING TOOLS."
 
 gen_config = {
     "temperature": 1,
@@ -45,24 +45,25 @@ model = genai.GenerativeModel(model_name="gemini-1.5-pro-latest",
                               safety_settings=safety_settings)
 
 
-def store_message(message,role,chat_id):
-    msg_object = {'role':role,'parts':[message.text]}
+def store_message(message, role, chat_id):
+    msg_object = {'role': role, 'parts': [message.text]}
 
     if (chat_id in chat_history.keys()):
         chat_history[chat_id].append(msg_object)
     else:
         chat_history[chat_id] = [msg_object]
 
+
 def ask_gemini(message):
 
     chat_id = str(message.chat.id)
-    store_message(message,'user',chat_id)
-    
+    store_message(message, 'user', chat_id)
+
     chat = chat_history[chat_id]
 
     response = model.generate_content(chat)
-    store_message(response,'model',chat_id)
-    
+    store_message(response, 'model', chat_id)
+
     return response.text
 
 # def extract_word(message):
@@ -75,29 +76,40 @@ def ask_gemini(message):
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
-standard_rep = '''Hey there, I'm Spike! How can I help you?'''
+standard_rep = '''Hey there, I'm Spike! 🧠💬🧑🏻‍🏫
+
+- Tirar dúvidas com Spike: Envie uma mensagem contendo "Spike" para obter assistência do bot. (Ex.: Spike, como se diz palha italiana em inglês?)
+
+- Consultas de Pronúncia: Digite "pronunciation of" seguido de uma palavra para receber um link para sua pronúncia. (Ex.: pronunciation of busy)
+
+- Conversas Informais: Interaja com Spike como faria com um amigo, praticando inglês durante o processo. (Ex.:  Spike, let's practice small talk! How are you doing today? )
+
+How can I help you today? 😊'''
+
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     rep = standard_rep
     bot.reply_to(message, rep)
 
+
 @bot.message_handler(func=lambda msg: True)
 def process_message(message):
     txt = message.text.lower()
-    if('spike' in txt):
+    if ('spike' in txt):
         rep = ask_gemini(message)
-    elif('pronunciation' in txt):
-        word = message.text.split(' ')[1].lower()
-        rep = f'''You can check the pronunciation of the word **{word.capitalize()}** below:
+    elif ('pronunciation' in txt):
+        word = message.text.split(' ')[2].lower()
+        rep = f'''You can check the pronunciation of the word **{word}** below:
+
 https://www.google.com/search?q=pronunciation+{word}
+
 https://dictionary.cambridge.org/pronunciation/english/{word}'''
-    elif('hey' in txt):
-        rep = standard_rep
-    elif('thank' in txt):
+    elif ('thank' in txt):
         rep = 'See you, spacecowboy... 🤠🌌'
     else:
         rep = standard_rep
-    bot.reply_to(message, rep.replace('*',''))
+    bot.reply_to(message, rep.replace('*', ''))
+
 
 bot.infinity_polling()

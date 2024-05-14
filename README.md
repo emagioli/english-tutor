@@ -14,13 +14,13 @@ Bem-vindo ao Bot Tutor de Inglês, seu assistente pessoal para aprender inglês 
 
 ## Exemplos de Uso
 - **Tirar dúvidas com Spike**: Envie uma mensagem contendo "Spike" para obter assistência do bot. (Ex.: ***Spike, como se diz palha italiana em inglês?***)
-- **Consultas de Pronúncia**: Digite "pronunciation" seguido de uma palavra para receber um link para sua pronúncia. (Ex.: ***pronunciation of busy***)
+- **Consultas de Pronúncia**: Digite "pronunciation of" seguido de uma palavra para receber um link para sua pronúncia. (Ex.: ***pronunciation of busy***)
 - **Conversas Informais**: Interaja com Spike como faria com um amigo, praticando inglês durante o processo.
 
 ## Como Começar
 Para começar a usar o Bot Tutor de Inglês, basta [clicar aqui](https://web.telegram.org/k/#@SpikeEnglishBot) para conversar com Spike, e você pode começar sua jornada de aprendizado de inglês imediatamente!
 
-## Contribuidores
+## Colaboradores
 - [Enzo Magioli](https://www.linkedin.com/in/enzo-magioli/) - Cientista de Dados e Prof. de Inglês
 
 ## Feedback
