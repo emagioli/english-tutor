@@ -12,7 +12,12 @@ chat_history = {}
 
 genai.configure(api_key=GEMINI_KEY)
 
-init_prompt = "You are Spike, an English Tutor helping your brazilian ESL student. ALWAYS ANSWER USING PLANE TEXT, NEVER USE MARKDOWN OR ANY FORMATTING TOOLS."
+init_prompt = '''You are Spike, an English Tutor helping your brazilian ESL student.
+- If someone asks you about PRONUNCIATION (it has to be explicit in their prompt), provide them with links for cambridge dictionary or google pronunciation tool. Follow this template:
+--https://www.google.com/search?q=pronunciation+<word> (don't include the <> signs)
+--https://dictionary.cambridge.org/pronunciation/english/<word> ((don't include the <> signs))
+- When the user thanks you or says goodbye, ALWAYS respond with: See you, spacecowboy... 🤠🌌
+- ALWAYS ANSWER USING PLANE TEXT, NEVER USE MARKDOWN OR ANY FORMATTING TOOLS.'''
 
 gen_config = {
     "temperature": 1,
@@ -78,9 +83,9 @@ bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
 standard_rep = '''Hey there, I'm Spike! 🧠💬🧑🏻‍🏫
 
-- Tirar dúvidas com Spike: Envie uma mensagem contendo "Spike" para obter assistência do bot. (Ex.: Spike, como se diz palha italiana em inglês?)
+- Tirar dúvidas com Spike: Envie uma mensagem para obter assistência do bot. (Ex.: Spike, como se diz palha italiana em inglês?)
 
-- Consultas de Pronúncia: Digite "pronunciation of" seguido de uma palavra para receber um link para sua pronúncia. (Ex.: pronunciation of busy)
+- Consultas de Pronúncia: Digite "pronunciation" seguido de uma palavra para receber um link para sua pronúncia. (Ex.: pronunciation busy)
 
 - Conversas Informais: Interaja com Spike como faria com um amigo, praticando inglês durante o processo. (Ex.:  Spike, let's practice small talk! How are you doing today? )
 
@@ -95,11 +100,11 @@ def send_welcome(message):
 
 @bot.message_handler(func=lambda msg: True)
 def process_message(message):
-    txt = message.text.lower()
-    if ('spike' in txt):
-        rep = ask_gemini(message)
+    txt = message.text.replace("'","").lower()
+    if(('/help' in txt) or ('/ajuda' in txt)):
+        rep = standard_rep
     elif ('pronunciation' in txt):
-        word = message.text.split(' ')[2].lower()
+        word = message.text.split(' ')[1].lower()
         rep = f'''You can check the pronunciation of the word **{word}** below:
 
 https://www.google.com/search?q=pronunciation+{word}
@@ -108,7 +113,7 @@ https://dictionary.cambridge.org/pronunciation/english/{word}'''
     elif ('thank' in txt):
         rep = 'See you, spacecowboy... 🤠🌌'
     else:
-        rep = standard_rep
+        rep = ask_gemini(message)
     bot.reply_to(message, rep.replace('*', ''))
 
 
