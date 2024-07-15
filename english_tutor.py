@@ -85,7 +85,7 @@ standard_rep = '''Hey there, I'm Spike! 🧠💬🧑🏻‍🏫
 
 - Tirar dúvidas com Spike: Envie uma mensagem para obter assistência do bot. (Ex.: Spike, como se diz palha italiana em inglês?)
 
-- Consultas de Pronúncia: Digite "pronunciation" seguido de uma palavra para receber um link para sua pronúncia. (Ex.: pronunciation busy)
+- Consultas de Pronúncia: Digite "pronunciation of" seguido de uma palavra para receber um link para sua pronúncia. (Ex.: pronunciation of busy)
 
 - Conversas Informais: Interaja com Spike como faria com um amigo, praticando inglês durante o processo. (Ex.:  Spike, let's practice small talk! How are you doing today? )
 
@@ -103,15 +103,13 @@ def process_message(message):
     txt = message.text.replace("'","").lower()
     if(('/help' in txt) or ('/ajuda' in txt)):
         rep = standard_rep
-    elif ('pronunciation' in txt):
-        word = message.text.split(' ')[1].lower()
+    elif (txt[:16] == 'pronunciation of'):
+        word = message.text.split(' ')[2].lower()
         rep = f'''You can check the pronunciation of the word **{word}** below:
 
 https://www.google.com/search?q=pronunciation+{word}
 
-https://dictionary.cambridge.org/pronunciation/english/{word}'''
-    elif ('thank' in txt):
-        rep = 'See you, spacecowboy... 🤠🌌'
+https://dictionary.cambridge.org/pronunciation/english/{word}'''        
     else:
         rep = ask_gemini(message)
     bot.reply_to(message, rep.replace('*', ''))
