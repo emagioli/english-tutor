@@ -1,14 +1,12 @@
 # Bot Tutor de Inglês para Telegram
 
-<div style="display:grid; grid-template-columns: auto auto; gap: 20px;">
-    <div style="margin: 25px 0 0 0;">
-        <p>Bem-vindo ao Bot Tutor de Inglês, seu assistente pessoal para aprender inglês no Telegram! Este bot, chamado Spike, foi projetado para ajudar estudantes brasileiros de inglês como segunda língua a melhorar suas habilidades em inglês de forma divertida e interativa.</p>
-        <p>Clique <a href="https://t.me/SpikeEnglishBot">aqui</a> para testar o bot caso você já possua o Telegram instalado em seu dispositivo. Para instruções mais detalhadas, siga para as seções descritas abaixo.</p>
-     </div>   
-    <img src="./img/spike_profile_flag.png" alt="spike_profile" width="180px"style="margin:10px 0;"/>
-    
-</div>
+<div>
+<img align="right" src="./img/spike_profile_flag.png" alt="spike_profile" width="180px" style="margin:10px;"/>
 
+Bem-vindo ao Bot Tutor de Inglês, seu assistente pessoal para aprender inglês no Telegram! Este bot, chamado Spike, foi projetado para ajudar estudantes brasileiros de inglês como segunda língua a melhorar suas habilidades em inglês de forma divertida e interativa.
+
+Clique [aqui](https://t.me/SpikeEnglishBot) para testar o bot caso você já possua o Telegram instalado em seu dispositivo. Para instruções mais detalhadas, siga para as seções descritas abaixo.
+</div>
 
 ## Recursos
 - **Aprendizado Interativo**: Engaje-se em conversas com Spike para praticar suas habilidades em inglês.
