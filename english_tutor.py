@@ -1,12 +1,11 @@
+import os.path
+
 import google.generativeai as genai
 import telebot
 
 GEMINI_KEY = open("./api_key.txt", "r").read()
 TELEGRAM_TOKEN = open("./telegram_token_english_bot.txt", "r").read()
-
-# setting up chats history
-
-chat_history = {}
+CHATS_PATH = "./chats/"
 
 # setting up gemini model
 
@@ -54,29 +53,33 @@ model = genai.GenerativeModel(model_name="gemini-1.5-pro-latest",
 
 def store_message(message, role, chat_id):
     msg_object = {'role': role, 'parts': [message.text]}
+    chat_log_path = f'{CHATS_PATH}/{chat_id}.txt'
+    
+    with open(chat_log_path,'a', encoding='utf-8') as log:
+        log.write(str(msg_object)+'¨') # using the ¨ char as separator
 
-    if (chat_id in chat_history.keys()):
-        chat_history[chat_id].append(msg_object)
-    else:
-        chat_history[chat_id] = [msg_object]
-
+def get_messages(chat_id):
+    chat_log_path = f'{CHATS_PATH}/{chat_id}.txt'
+    messages = []
+    if(os.path.isfile(chat_log_path)): # loads the messages from the .txt
+        with open(chat_log_path,'r', encoding='utf-8') as log:  
+            strings = log.read().split('¨') # list with each msg_object as a string
+            strings.pop() # removes the '' element at the end
+            for s in strings:
+                messages.append(eval(s))
+    return messages
 
 def ask_gemini(message):
 
     chat_id = str(message.chat.id)
     store_message(message, 'user', chat_id)
 
-    chat = chat_history[chat_id]
+    chat = get_messages(chat_id)
 
     response = model.generate_content(chat)
     store_message(response, 'model', chat_id)
 
     return response.text
-
-# def extract_word(message):
-#     prompt = '''Your output is going to be JUST THE WORD that's being asked, no punctuation nor phonetic alphabets: {message.text}'''
-#     response = model.generate_content(prompt)
-#     return response.text
 
 # --------------- Bot Telegram ---------------
 
