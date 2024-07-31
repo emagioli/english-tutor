@@ -3,9 +3,11 @@ import os.path
 import google.generativeai as genai
 import telebot
 
+import sqlite3
+
 GEMINI_KEY = open("./api_key.txt", "r").read()
 TELEGRAM_TOKEN = open("./telegram_token_english_bot.txt", "r").read()
-CHATS_PATH = "./chats/"
+DB_PATH = './chats/Bebop.db'
 
 # setting up gemini model
 
@@ -50,23 +52,32 @@ model = genai.GenerativeModel(model_name="gemini-1.5-pro-latest",
                               system_instruction=init_prompt,
                               safety_settings=safety_settings)
 
-
 def store_message(message, role, chat_id):
-    msg_object = {'role': role, 'parts': [message.text]}
-    chat_log_path = f'{CHATS_PATH}/{chat_id}.txt'
-    
-    with open(chat_log_path,'a', encoding='utf-8') as log:
-        log.write(str(msg_object)+'¨') # using the ¨ char as separator
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        INSERT INTO messages (chat_id, role, content)
+        VALUES (?,?,?);''',
+        (chat_id, role, message.text))
+
+    conn.commit()
+    conn.close()
 
 def get_messages(chat_id):
-    chat_log_path = f'{CHATS_PATH}/{chat_id}.txt'
-    messages = []
-    if(os.path.isfile(chat_log_path)): # loads the messages from the .txt
-        with open(chat_log_path,'r', encoding='utf-8') as log:  
-            strings = log.read().split('¨') # list with each msg_object as a string
-            strings.pop() # removes the '' element at the end
-            for s in strings:
-                messages.append(eval(s))
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute('''SELECT role, content 
+                   FROM messages 
+                   WHERE chat_id = ? 
+                   ORDER BY id;''',
+                   (chat_id,))
+    
+    rows = cursor.fetchall()
+    
+    messages = [{'role':role,'parts':[content]} for role, content in rows]
+
     return messages
 
 def ask_gemini(message):
